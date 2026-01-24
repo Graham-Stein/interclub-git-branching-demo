@@ -2,17 +2,33 @@ name: Reset stage to main
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type RESET to confirm resetting stage to main'
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
-  reset:
-    name: Reset stage branch
+  reset_stage:
+    name: Reset stage branch to main
     runs-on: ubuntu-latest
 
+    # This is the Environment gate. Create it in GitHub UI (step 2).
+    environment:
+      name: stage-reset
+
     steps:
-      - name: Checkout repository
+      - name: Confirm
+        run: |
+          if [ "${{ inputs.confirm }}" != "RESET" ]; then
+            echo "Confirmation failed (you typed: ${{ inputs.confirm }})"
+            exit 1
+          fi
+
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
