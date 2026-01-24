@@ -1,0 +1,33 @@
+name: validate-source-branch
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+    # apply only when the PR targets your protected branch
+    branches: [ main ]  # change if your target is different
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source branch name
+        shell: bash
+        run: |
+          SRC="${{ github.head_ref }}"
+
+          echo "Source branch: $SRC"
+
+          # Explicitly block stage 
+          if [[ "$SRC" == "stage" ]]; then
+            echo "::error::Merges from 'stage' are not allowed."
+            exit 1
+          fi
+
+          # Allow only these prefixes
+          if [[ "$SRC" =~ ^(feature|bugfix|hotfix)/.+$ ]]; then
+            echo "Allowed source branch."
+            exit 0
+          fi
+
+          echo "::error::Source branch must be feature/*, bugfix/*, or hotfix/*."
+          exit 1
