@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
     # apply only when the PR targets your protected branch
-    branches: [ main ]  # change if your target is different
+    branches: [ main, stage ]  # change if your target is different
 
 jobs:
   validate:
