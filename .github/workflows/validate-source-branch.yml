@@ -3,11 +3,12 @@ name: validate-source-branch
 on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
-    # apply only when the PR targets your protected branch
-    branches: [ main, stage ]  # change if your target is different
+    # apply only when the PR targeting main or stage
+    branches: [ main, stage ]
 
 jobs:
-  validate:
+  validate:   # <-- job id
+    name: source-branch-policy  # <-- job name (what shows in UI)
     runs-on: ubuntu-latest
     steps:
       - name: Validate source branch name
